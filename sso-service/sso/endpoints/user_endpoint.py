@@ -4,7 +4,7 @@ from flask.ext.api import status
 import flask as fk
 
 from ssodb.common import crossdomain
-from sso import app, SERVICE_URL, service_response
+from sso import app, SERVICE_URL, @crossdomain(fk=fk, app=app, origin='*'
 from ssodb.common.models import Country, Service, User, Activity
 
 import mimetypes
@@ -22,9 +22,9 @@ import phonenumbers
 def users_countries():
     if fk.request.method == 'GET':
         countries = [ c.info() for c in Country.objects()]
-        return core_response(200, 'Users countries', {'size':len(countries), 'countries':countries})
+        return service_response(200, 'Users countries', {'size':len(countries), 'countries':countries})
     else:
-        return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
 @app.route(SERVICE_URL + '/user/register', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -36,13 +36,13 @@ def user_register():
             phone = data.get('phone', None)
             service = data.get('service', None)
             if phone is None and service is None:
-                return core_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
+                return service_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
             else:
                 _service = Service.objects(name=service).first()
                 _user = User.objects(phone=phone).first()
                 if _user is None:
                     if _service is None:
-                        return core_response(204, 'User registration denied', 'No service with this name was found.')
+                        return service_response(204, 'User registration denied', 'No service with this name was found.')
                     country = str(phonenumbers.parse(phone, None).country_code)
                     _user = User(created_at=str(datetime.datetime.utcnow()))
                     _user.phone = phone
@@ -57,13 +57,13 @@ def user_register():
                     _user.country = _country
                     _user.services.append(service)
                     _user.save()
-                    return core_response(201, 'Account created', smartWelcome(country))
+                    return service_response(201, 'Account created', smartWelcome(country))
                 else:
-                    return core_response(204, 'User registration denied', 'A user with this phone number already exists.')
+                    return service_response(204, 'User registration denied', 'A user with this phone number already exists.')
         else:
-            return core_response(204, 'User registration failed', 'No data submitted.')
+            return service_response(204, 'User registration failed', 'No data submitted.')
     else:
-        return core_response(405, 'Method not allowed', 'This endpoint supports only a POST method.')
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a POST method.')
 
 @app.route(SERVICE_URL + '/users/country/<country>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -76,9 +76,9 @@ def users_by_country(country):
             if _country is None:
                 _country = Country.objects(name=country).first()
             users = [u.info() for u in User.objects(country=_country)]
-        return core_response(200, 'Country {0} users'.format(country), {'size':len(users), 'users':users})
+        return service_response(200, 'Country {0} users'.format(country), {'size':len(users), 'users':users})
     else:
-        return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
 @app.route(SERVICE_URL + '/user/pull/<country>/<index>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -92,7 +92,7 @@ def user_pull_country(country, index):
                 _country = Country.objects(name=country).first()
             users = [u.info() for u in User.objects(country=_country)]
         if index >= len(users) or index == "-1":
-            return core_response(205, 'End of the list', 'No users anymore.')
+            return service_response(205, 'End of the list', 'No users anymore.')
         else:
             user = users[int(index)]
             data = user.info()
@@ -108,9 +108,9 @@ def user_pull_country(country, index):
                 activity.save()
             activity.sms = activity.sms + 1
             activity.save()
-            return core_response(200, 'Country {0} user {1}'.format(country, index), data)
+            return service_response(200, 'Country {0} user {1}'.format(country, index), data)
     else:
-        return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
 @app.route(SERVICE_URL + '/user/delete/<user_id_or_phone>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -124,11 +124,11 @@ def user_delete(user_id_or_phone):
             _userPh = User.objects(phone=user_id_or_phone).first()
         if _userID:
             _userID.delete()
-            return core_response(200, 'Deletion succeeded', 'User {0} deleted.'.format(user_id_or_phone))
+            return service_response(200, 'Deletion succeeded', 'User {0} deleted.'.format(user_id_or_phone))
         elif _userPh:
             _userPh.delete()
-            return core_response(200, 'Deletion succeeded', 'User {0} deleted.'.format(user_id_or_phone))
+            return service_response(200, 'Deletion succeeded', 'User {0} deleted.'.format(user_id_or_phone))
         else:
-            return core_response(204, 'Unknown user', 'No corresponding user found.')
+            return service_response(204, 'Unknown user', 'No corresponding user found.')
     else:
-        return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
