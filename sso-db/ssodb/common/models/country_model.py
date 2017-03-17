@@ -7,7 +7,7 @@ class Country(db.Document):
     created_at = db.StringField(default=str(datetime.datetime.utcnow()))
     updated_at = db.StringField(default=str(datetime.datetime.utcnow()))
     name = db.StringField(required=True, unique=True)
-    code = db.StringField(required=True, (unique=True)
+    code = db.StringField(required=True, unique=True)
     zone = db.StringField(default="unknown")
     users = db.IntField(default=0)
     possible_language = ["francais", "english", "spanish", "italian", "portuguese", "arabic", "unknown"]
