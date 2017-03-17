@@ -1,7 +1,7 @@
-"""Python module, `newsdb`, for News Backend.
+"""Python module, `ssodb`, for SSO Backend.
 """
 import os
-import newsdb.common
+import ssodb.common
 
 def get_version():
     """Get the version of the code from egg_info.

@@ -1,7 +1,7 @@
-"""News Service common modules.
+"""SMS SSO Service common modules.
 """
 from .models import *
-"""News Service Mongoengine Database Tools.
+"""SMS SSO Service Mongoengine Database Tools.
 """
 
 from .tools import *

@@ -3,9 +3,9 @@ import json
 from flask.ext.api import status
 import flask as fk
 
-from newsdb.common import crossdomain
-from news import app, SERVICE_URL, service_response
-from newsdb.common.models import Country, Service, User, Activity
+from ssodb.common import crossdomain
+from ssodb import app, SERVICE_URL, service_response
+from ssodb.common.models import Country, Service, User, Activity
 
 import mimetypes
 import json

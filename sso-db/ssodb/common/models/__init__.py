@@ -1,6 +1,7 @@
-"""CoRR Mongoengine Database Models.
+"""SMS SSO Mongoengine Database Models.
 """
 
-from .radio_model import Radio
-from .coverage_model import Coverage
-from .news_model import News
+from .country_model import Country
+from .service_model import Service
+from .user_model import User
+from .activity_model import Activity

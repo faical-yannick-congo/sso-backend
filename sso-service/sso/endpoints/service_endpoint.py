@@ -3,9 +3,9 @@ import json
 from flask.ext.api import status
 import flask as fk
 
-from newsdb.common import crossdomain
-from news import app, SERVICE_URL, service_response
-from newsdb.common.models import Radio, Coverage, News
+from ssodb.common import crossdomain
+from ssodb import app, SERVICE_URL, service_response
+from ssodb.common.models import User, Service
 
 import mimetypes
 import json
@@ -31,7 +31,7 @@ def add_service():
             else:
                 _service = Service.objects(name=name).first()
                 if _service is None:
-                    _service = News(created_at=str(datetime.datetime.utcnow()))
+                    _service = Service(created_at=str(datetime.datetime.utcnow()))
                     _service.name = name
                     _service.host = host
                     _service.country = country
@@ -65,7 +65,7 @@ def edit_service(service_name_or_id):
                 menu_endpoint = data.get('menu-endpoint', _service.menu_endpoint)
 
                 if name != _service.name:
-                    _service_check = News.objects(name=name).first()
+                    _service_check = Service.objects(name=name).first()
                     if _service_check is None:
                         _service.name = name
                     else:
@@ -104,7 +104,7 @@ def show_service(service_name_or_id):
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
-@app.route(SERVICE_URL + '/news/delete/<service_name_or_id>', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@app.route(SERVICE_URL + '/service/delete/<service_name_or_id>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
 def delete_service(service_name_or_id):
     if fk.request.method == 'GET':

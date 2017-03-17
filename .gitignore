@@ -4,5 +4,4 @@ nms-db/data
 nms-db/dist
 nms-db/build
 nms-db/nmsdb.egg-info
-nms-news/config.py
-nms-weather/config.py
+nms-sso/config.py

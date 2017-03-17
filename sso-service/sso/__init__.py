@@ -1,9 +1,10 @@
 """CoRR api module."""
 import flask as fk
-from newsdb.common.core import setup_app
-from newsdb.common.models import Radio
-from newsdb.common.models import Coverage
-from newsdb.common.models import News
+from ssodb.common.core import setup_app
+from ssodb.common.models import Country
+from ssodb.common.models import Service
+from ssodb.common.models import User
+from ssodb.common.models import Activity
 import tempfile
 from io import StringIO
 from io import BytesIO
@@ -23,10 +24,10 @@ import glob
 # Flask app instance
 app = setup_app(__name__)
 
-# The sms news service's version
+# The sms sso service's version
 SERVICE_VERSION = 0.1
-# The sms news service base url
-SERVICE_URL = '/sms/services/news/v{0}'.format(SERVICE_VERSION)
+# The sms sso service base url
+SERVICE_URL = '/sms/services/sso/v{0}'.format(SERVICE_VERSION)
 
 
 def service_response(code, title, content):
@@ -36,7 +37,7 @@ def service_response(code, title, content):
             Flask response with a prettified json content.
     """
     import flask as fk
-    response = {'service':'sms-news', 'code':code, 'title':title, 'content':content}
+    response = {'service':'sms-sso', 'code':code, 'title':title, 'content':content}
     return fk.Response(json.dumps(response, sort_keys=True, indent=4, separators=(',', ': ')), mimetype='application/json')
 
 def data_pop(data=None, element=''):
@@ -58,15 +59,5 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
-def smartWelcome(country=None):
-    if country in ["212"]:
-        return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
-    elif country in ["34"]:
-        return "Bienvenido al servicio de mensajeria. Gracias por confiar en nosotros en la entrega de sus noticias diarias."
-    elif country in ["33", "226", "227"]:
-        return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
-    else:
-        return "Welcome to the News Messaging Service. Thank you for trusting us in delivering your daily news."
-
 # import all the api endpoints.
-import news.endpoints
+import sso.endpoints
