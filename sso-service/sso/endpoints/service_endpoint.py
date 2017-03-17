@@ -4,7 +4,7 @@ from flask.ext.api import status
 import flask as fk
 
 from ssodb.common import crossdomain
-from ssodb import app, SERVICE_URL, service_response
+from sso import app, SERVICE_URL, service_response
 from ssodb.common.models import User, Service
 
 import mimetypes
