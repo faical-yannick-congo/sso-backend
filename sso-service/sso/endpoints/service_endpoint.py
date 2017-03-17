@@ -59,8 +59,8 @@ def edit_service(service_name_or_id):
         if _service:
             if fk.request.data:
                 data = json.loads(fk.request.data)
-                name = data.get('name', _service.name))
-                host = data.get('host', _service.host))
+                name = data.get('name', _service.name)
+                host = data.get('host', _service.host)
                 status = data.get('status', _service.status)
                 menu_endpoint = data.get('menu-endpoint', _service.menu_endpoint)
 
