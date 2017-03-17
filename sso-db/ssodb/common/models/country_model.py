@@ -20,7 +20,7 @@ class Country(db.Document):
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),
         'created_at':self.created_at, 'name':self.name,
-        'code':self.code, 'zone':self.zone, 'users':self.users
+        'code':self.code, 'zone':self.zone, 'users':self.users,
         'language':self.language}
         return data
 
