@@ -17,8 +17,8 @@ from io import StringIO
 import hashlib
 import phonenumbers
 
-@app.route(CORE_URL + '/users/countries', methods=['GET','POST','PUT','UPDATE','DELETE'])
-@crossdomain(origin='*')
+@app.route(SERVICE_URL + '/users/countries', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
 def users_countries():
     if fk.request.method == 'GET':
         countries = [ c.info() for c in Country.objects()]
@@ -26,8 +26,8 @@ def users_countries():
     else:
         return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
-@app.route(CORE_URL + '/user/register', methods=['GET','POST','PUT','UPDATE','DELETE'])
-@crossdomain(origin='*')
+@app.route(SERVICE_URL + '/user/register', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
 def user_register():
     if fk.request.method == 'POST':
         if fk.request.data:
@@ -65,8 +65,8 @@ def user_register():
     else:
         return core_response(405, 'Method not allowed', 'This endpoint supports only a POST method.')
 
-@app.route(CORE_URL + '/users/country/<country>', methods=['GET','POST','PUT','UPDATE','DELETE'])
-@crossdomain(origin='*')
+@app.route(SERVICE_URL + '/users/country/<country>', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
 def users_by_country(country):
     if fk.request.method == 'GET':
         if country == 'all':
@@ -80,8 +80,8 @@ def users_by_country(country):
     else:
         return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
-@app.route(CORE_URL + '/user/pull/<country>/<index>', methods=['GET','POST','PUT','UPDATE','DELETE'])
-@crossdomain(origin='*')
+@app.route(SERVICE_URL + '/user/pull/<country>/<index>', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
 def user_pull_country(country, index):
     if fk.request.method == 'GET':
         if country == 'all':
@@ -112,8 +112,8 @@ def user_pull_country(country, index):
     else:
         return core_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
-@app.route(CORE_URL + '/user/delete/<user_id_or_phone>', methods=['GET','POST','PUT','UPDATE','DELETE'])
-@crossdomain(origin='*')
+@app.route(SERVICE_URL + '/user/delete/<user_id_or_phone>', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
 def user_delete(user_id_or_phone):
     if fk.request.method == 'GET':
         if '+' not in user_id_or_phone:
