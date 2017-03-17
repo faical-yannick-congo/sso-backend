@@ -31,7 +31,7 @@ def users_countries():
 def user_register():
     if fk.request.method == 'POST':
         if fk.request.data:
-            print fk.request.data
+            print(fk.request.data)
             data = json.loads(fk.request.data)
             phone = data.get('phone', None)
             service = data.get('service', None)
