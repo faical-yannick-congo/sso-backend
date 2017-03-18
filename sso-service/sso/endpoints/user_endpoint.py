@@ -94,7 +94,7 @@ def user_pull_country(country, index):
             return service_response(205, 'End of the list', 'No users anymore.')
         else:
             user = users[int(index)]
-            data = user.info()
+            data = user
             if int(index)+1 >= len(users):
                 data['next'] = -1
             else:
