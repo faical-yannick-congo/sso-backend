@@ -14,7 +14,7 @@ class Activity(db.Document):
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
-        return super(Coverage, self).save(*args, **kwargs)
+        return super(Activity, self).save(*args, **kwargs)
 
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),

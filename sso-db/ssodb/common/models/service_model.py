@@ -15,7 +15,7 @@ class Service(db.Document):
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
         self.day = str(datetime.date.today().isoformat())
-        return super(News, self).save(*args, **kwargs)
+        return super(Service, self).save(*args, **kwargs)
 
     def info(self):
         data = {'updated-at':str(self.updated_at), 'id':str(self.id),
