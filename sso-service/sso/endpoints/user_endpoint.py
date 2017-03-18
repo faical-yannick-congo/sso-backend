@@ -89,21 +89,26 @@ def user_pull_country(country, index):
             _country = Country.objects(code=country).first()
             if _country is None:
                 _country = Country.objects(name=country).first()
-            users = [u for u in User.objects(country=_country)]
-        if int(index) >= len(users) or index == "-1":
-            return service_response(205, 'End of the list', 'No users anymore.')
+            users = []
+        service = fk.request.args.get('service', 'None')
+        _service = Service.objects(name=service).first()
+        if _service is None:
+            return service_response(204, 'User pull failed', 'Unknown service specified.')
         else:
-            user = users[int(index)]
-            data = user.info()
-            if int(index)+1 >= len(users):
-                data['next'] = -1
+            for u in User.objects(country=_country):
+                if _service.name in u.services:
+                    users.append(u)
+            if int(index) >= len(users) or index == "-1":
+                return service_response(205, 'End of the list', 'No users anymore.')
             else:
-                data['next'] = int(index)+1
-            data['upcoming'] = len(users) - (int(index)+1)
-            day = str(datetime.date.today().isoformat())
-            service = fk.request.args.get('service', 'None')
-            _service = Service.objects(name=service).first()
-            if _service:
+                user = users[int(index)]
+                data = user.info()
+                if int(index)+1 >= len(users):
+                    data['next'] = -1
+                else:
+                    data['next'] = int(index)+1
+                data['upcoming'] = len(users) - (int(index)+1)
+                day = str(datetime.date.today().isoformat())
                 activity = Activity.objects(user=user, service=_service, day=day).first()
                 if activity is None:
                     activity =  Activity(created_at=str(datetime.datetime.utcnow()), user=user, service=_service, day=day)
@@ -111,8 +116,6 @@ def user_pull_country(country, index):
                 activity.sms = activity.sms + 1
                 activity.save()
                 return service_response(200, 'Country {0} user {1}'.format(country, index), data)
-            else:
-                return service_response(204, 'User pull failed', 'Unknown service specified.')
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
