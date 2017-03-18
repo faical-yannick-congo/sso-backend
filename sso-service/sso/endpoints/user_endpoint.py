@@ -96,7 +96,7 @@ def user_pull_country(country, index):
             return service_response(204, 'User pull failed', 'Unknown service specified.')
         else:
             for u in User.objects(country=_country):
-                if _service.name in u.services:
+                if _service.name in [s.name for s in u.services]:
                     users.append(u)
             if int(index) >= len(users) or index == "-1":
                 return service_response(205, 'End of the list', 'No users anymore.')
