@@ -89,12 +89,12 @@ def user_pull_country(country, index):
             _country = Country.objects(code=country).first()
             if _country is None:
                 _country = Country.objects(name=country).first()
-            users = [u.info() for u in User.objects(country=_country)]
+            users = [u for u in User.objects(country=_country)]
         if int(index) >= len(users) or index == "-1":
             return service_response(205, 'End of the list', 'No users anymore.')
         else:
             user = users[int(index)]
-            data = user
+            data = user.info()
             if int(index)+1 >= len(users):
                 data['next'] = -1
             else:
