@@ -17,7 +17,7 @@ class User(db.Document):
 
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),
-        'created_at':self.created_at, 'phone':self.name,
+        'created_at':str(self.created_at), 'phone':self.phone,
         'country':self.country.name, 'services':[s.name for s in self.services]}
         return data
 
