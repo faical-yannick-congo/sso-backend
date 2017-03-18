@@ -101,13 +101,18 @@ def user_pull_country(country, index):
                 data['next'] = int(index)+1
             data['upcoming'] = len(users) - (int(index)+1)
             day = str(datetime.date.today().isoformat())
-            activity = Activity.objects(user=user, day=day).first()
-            if activity is None:
-                activity =  Activity(created_at=str(datetime.datetime.utcnow()), user=user, day=day)
+            service = request.args.get('service')
+            _service = Service.objects(name=service).first()
+            if _service:
+                activity = Activity.objects(user=user, service=_service, day=day).first()
+                if activity is None:
+                    activity =  Activity(created_at=str(datetime.datetime.utcnow()), user=user, service=_service, day=day)
+                    activity.save()
+                activity.sms = activity.sms + 1
                 activity.save()
-            activity.sms = activity.sms + 1
-            activity.save()
-            return service_response(200, 'Country {0} user {1}'.format(country, index), data)
+                return service_response(200, 'Country {0} user {1}'.format(country, index), data)
+            else:
+                return service_response(204, 'User pull failed', 'Unknown service specified.')
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
