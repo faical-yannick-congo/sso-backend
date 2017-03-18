@@ -54,7 +54,7 @@ def user_register():
                         _country.users = 1
                         _country.save()
                     _user.country = _country
-                    _user.services.append(service)
+                    _user.services.append(_service)
                     _user.save()
                     return service_response(201, 'Account created', smartWelcome(country))
                 else:
