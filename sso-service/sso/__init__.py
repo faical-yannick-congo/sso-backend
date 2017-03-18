@@ -59,5 +59,26 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
+def smartWelcome(service=None, country=None):
+    if service == "news-service":
+        if country in ["212"]:
+            return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
+        elif country in ["34"]:
+            return "Bienvenido al servicio de mensajeria. Gracias por confiar en nosotros en la entrega de sus noticias diarias."
+        elif country in ["33", "226", "227"]:
+            return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
+        else:
+            return "Welcome to the News Messaging Service. Thank you for trusting us in delivering your daily news."
+    else:
+        if country in ["212"]:
+            return "Bienvenue! Nous sommes desole mais le service choisi est inexistant."
+        elif country in ["34"]:
+            return "Bienvenido! Nous sommes desole mais le service choisi est inexistant."
+        elif country in ["33", "226", "227"]:
+            return "Bienvenue! Nous sommes desole mais le service choisi est inexistant."
+        else:
+            return "Welcome! We are sorry but the requested service does not exist."
+
+
 # import all the api endpoints.
 import sso.endpoints
