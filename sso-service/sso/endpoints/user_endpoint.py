@@ -101,7 +101,7 @@ def user_pull_country(country, index):
                 data['next'] = int(index)+1
             data['upcoming'] = len(users) - (int(index)+1)
             day = str(datetime.date.today().isoformat())
-            service = request.args.get('service')
+            service = fk.request.args.get('service', 'None')
             _service = Service.objects(name=service).first()
             if _service:
                 activity = Activity.objects(user=user, service=_service, day=day).first()
