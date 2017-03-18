@@ -90,7 +90,7 @@ def user_pull_country(country, index):
             if _country is None:
                 _country = Country.objects(name=country).first()
             users = [u.info() for u in User.objects(country=_country)]
-        if index >= len(users) or index == "-1":
+        if int(index) >= len(users) or index == "-1":
             return service_response(205, 'End of the list', 'No users anymore.')
         else:
             user = users[int(index)]
@@ -99,7 +99,7 @@ def user_pull_country(country, index):
                 data['next'] = -1
             else:
                 data['next'] = int(index)+1
-            data['upcoming'] = len(users) - (index+1)
+            data['upcoming'] = len(users) - (int(index)+1)
             day = str(datetime.date.today().isoformat())
             activity = Activity.objects(user=user, day=day).first()
             if activity is None:
