@@ -33,7 +33,6 @@ def add_service():
                     _service = Service(created_at=str(datetime.datetime.utcnow()))
                     _service.name = name
                     _service.host = host
-                    _service.country = country
                     _service.status = status
                     _service.menu_endpoint = menu_endpoint
                     _service.save()
