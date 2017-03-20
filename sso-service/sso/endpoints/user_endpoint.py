@@ -41,7 +41,7 @@ def user_register():
             data = json.loads(fk.request.data)
             phone = data.get('phone', None)
             service = data.get('service', None)
-            city = data.get('city', None)
+            city = data.get('city', 'capital')
             if phone is None and service is None:
                 return service_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
             else:
@@ -58,6 +58,7 @@ def user_register():
                     if _country:
                         _country.users = _country.users + 1
                         _country.save()
+                        _city = City.objects(name=city, country=_country).first()
                     else:
                         _country = Country(created_at=str(datetime.datetime.utcnow()), code=country)
                         _country_object = pycountry.countries.get(alpha2=region_code_for_number(pn))
@@ -74,9 +75,12 @@ def user_register():
                         if "-" in time_block[1]:
                             _country.zone = "GMT-{0}".format(time_block[1].split("-")[1].split(":")[0])
                         if "+" in time_block[1]:
-                            _country.zone = "GMT+{0}".format(time_block[1].split("+")[1].split(":")[0)
+                            _country.zone = "GMT+{0}".format(time_block[1].split("+")[1].split(":")[0])
                         _country.save()
+                        _city = City(created_at=str(datetime.datetime.utcnow()), name=city, country=_country)
+                        _city.save()
                     _user.country = _country
+                    _user.city = _city
                     _user.services.append(_service)
                     _user.save()
                     return service_response(201, 'Account created', smartWelcome(_service.name, country))
