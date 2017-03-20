@@ -2,7 +2,7 @@ import datetime
 from ..core import db
 import json
 from bson import ObjectId
-from ..model import Country
+from ..models import Country
 
 class City(db.Document):
     created_at = db.StringField(default=str(datetime.datetime.utcnow()))
