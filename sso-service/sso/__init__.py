@@ -2,6 +2,7 @@
 import flask as fk
 from ssodb.common.core import setup_app
 from ssodb.common.models import Country
+from ssodb.common.models import City
 from ssodb.common.models import Service
 from ssodb.common.models import User
 from ssodb.common.models import Activity

@@ -5,7 +5,7 @@ import flask as fk
 
 from ssodb.common import crossdomain
 from sso import app, SERVICE_URL, service_response, smartWelcome
-from ssodb.common.models import Country, Service, User, Activity
+from ssodb.common.models import Country, City, Service, User, Activity
 
 import mimetypes
 import traceback
@@ -15,6 +15,13 @@ import string
 from io import StringIO
 import hashlib
 import phonenumbers
+from phonenumbers.phonenumberutil import region_code_for_country_code
+from phonenumbers.phonenumberutil import region_code_for_number
+import pycountry
+
+from geopy import geocoders
+from tzwhere import tzwhere
+from pytz import timezone
 
 @app.route(SERVICE_URL + '/users/countries', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -34,6 +41,7 @@ def user_register():
             data = json.loads(fk.request.data)
             phone = data.get('phone', None)
             service = data.get('service', None)
+            city = data.get('city', None)
             if phone is None and service is None:
                 return service_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
             else:
@@ -42,7 +50,8 @@ def user_register():
                 if _user is None:
                     if _service is None:
                         return service_response(204, 'User registration denied', 'No service with this name was found.')
-                    country = str(phonenumbers.parse(phone, None).country_code)
+                    pn = phonenumbers.parse(phone, None)
+                    country = str(pn.country_code)
                     _user = User(created_at=str(datetime.datetime.utcnow()))
                     _user.phone = phone
                     _country = Country.objects(code=country).first()
@@ -50,8 +59,22 @@ def user_register():
                         _country.users = _country.users + 1
                         _country.save()
                     else:
-                        _country = Country(created_at=str(datetime.datetime.utcnow()), name=country, code=country)
+                        _country = Country(created_at=str(datetime.datetime.utcnow()), code=country)
+                        _country_object = pycountry.countries.get(alpha2=region_code_for_number(pn))
+                        _country_name_short = region_code_for_country_code(pn.country_code)
+                        _country.name = "{0}:{1}".format(_country_name_short, _country_object.name)
                         _country.users = 1
+                        g = geocoders.GoogleV3()
+                        tz = tzwhere.tzwhere()
+                        place, (lat, lng) = g.geocode(_country_object.name)
+                        timeZoneStr = tz.tzNameAt(lat, lng)
+                        timeZoneObj = timezone(timeZoneStr)
+                        now_time = datetime.now(timezoneObj)
+                        time_block = str(now_time).split(" ")
+                        if "-" in time_block[1]:
+                            _country.zone = "GMT-{0}".format(time_block[1].split("-")[1].split(":")[0])
+                        if "+" in time_block[1]:
+                            _country.zone = "GMT+{0}".format(time_block[1].split("+")[1].split(":")[0)
                         _country.save()
                     _user.country = _country
                     _user.services.append(_service)
