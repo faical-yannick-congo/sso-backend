@@ -70,7 +70,7 @@ def user_register():
                         place, (lat, lng) = g.geocode(_country_object.name)
                         timeZoneStr = tz.tzNameAt(lat, lng)
                         timeZoneObj = timezone(timeZoneStr)
-                        now_time = datetime.now(timezoneObj)
+                        now_time = datetime.datetime.now(timezoneObj)
                         time_block = str(now_time).split(" ")
                         if "-" in time_block[1]:
                             _country.zone = "GMT-{0}".format(time_block[1].split("-")[1].split(":")[0])
