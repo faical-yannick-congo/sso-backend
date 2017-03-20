@@ -61,7 +61,7 @@ def user_register():
                         _city = City.objects(name=city, country=_country).first()
                     else:
                         _country = Country(created_at=str(datetime.datetime.utcnow()), code=country)
-                        _country_object = pycountry.countries.get(alpha2=region_code_for_number(pn))
+                        _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
                         _country_name_short = region_code_for_country_code(pn.country_code)
                         _country.name = "{0}:{1}".format(_country_name_short, _country_object.name)
                         _country.users = 1
