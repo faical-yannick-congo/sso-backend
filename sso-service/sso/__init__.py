@@ -67,7 +67,7 @@ def menu():
 def get_menu(service):
     r = requests.get('{0}/menu'.format(service.host))
     response = json.loads(r.text)
-    return response
+    return response['content']
 
 def smartWelcome(services=[], country=None):
     language = 'en'
