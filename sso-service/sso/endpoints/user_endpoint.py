@@ -22,6 +22,7 @@ import pycountry
 from geopy import geocoders
 from tzwhere import tzwhere
 from pytz import timezone
+from babel import Locale
 
 @app.route(SERVICE_URL + '/users/countries', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -77,6 +78,7 @@ def user_register():
                         _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
                         _country_name_short = region_code_for_country_code(pn.country_code)
                         _country.name = "{0}:{1}".format(_country_name_short, _country_object.name)
+                        _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         _country.users = 1
                         g = geocoders.GoogleV3()
                         tz = tzwhere.tzwhere()

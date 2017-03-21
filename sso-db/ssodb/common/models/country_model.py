@@ -10,8 +10,7 @@ class Country(db.Document):
     code = db.StringField(required=True, unique=True)
     zone = db.StringField(default="unknown")
     users = db.IntField(default=0)
-    possible_language = ["french", "english", "spanish", "italian", "portuguese", "arabic", "unknown"]
-    language = db.StringField(default="unknown", choices=possible_language)
+    language = db.StringField(d)
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
