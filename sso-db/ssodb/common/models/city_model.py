@@ -17,7 +17,7 @@ class City(db.Document):
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),
         'created_at':self.created_at, 'name':self.name,
-        'country':self.country.code, 'language':self.country.language}
+        'country':self.country.code}
         return data
 
     def to_json(self):
