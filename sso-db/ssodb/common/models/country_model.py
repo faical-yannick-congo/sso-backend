@@ -10,7 +10,7 @@ class Country(db.Document):
     code = db.StringField(required=True, unique=True)
     zone = db.StringField(default="unknown")
     users = db.IntField(default=0)
-    possible_language = ["francais", "english", "spanish", "italian", "portuguese", "arabic", "unknown"]
+    possible_language = ["french", "english", "spanish", "italian", "portuguese", "arabic", "unknown"]
     language = db.StringField(default="unknown", choices=possible_language)
 
     def save(self, *args, **kwargs):
