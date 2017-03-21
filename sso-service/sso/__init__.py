@@ -21,6 +21,7 @@ from calendar import monthrange
 import time
 
 import glob
+from translate import Translator
 
 # Flask app instance
 app = setup_app(__name__)
@@ -60,26 +61,27 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
-def smartWelcome(service=None, country=None):
-    if service == "news-service":
-        if country in ["212"]:
-            return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
-        elif country in ["34"]:
-            return "Bienvenido al servicio de mensajeria. Gracias por confiar en nosotros en la entrega de sus noticias diarias."
-        elif country in ["33", "226", "227"]:
-            return "Bienvenue dans le service de messagerie. Nous vous remercions de nous avoir fait confiance dans la prestation de vos nouvelles quotidiennes."
-        else:
-            return "Welcome to the News Messaging Service. Thank you for trusting us in delivering your daily news."
-    else:
-        if country in ["212"]:
-            return "Bienvenue! Nous sommes desole mais le service choisi est inexistant."
-        elif country in ["34"]:
-            return "Bienvenido! Nous sommes desole mais le service choisi est inexistant."
-        elif country in ["33", "226", "227"]:
-            return "Bienvenue! Nous sommes desole mais le service choisi est inexistant."
-        else:
-            return "Welcome! We are sorry but the requested service does not exist."
+def menu():
+    return "Welcome to a world of SMS Service that we value for you."
 
+def get_menu(service):
+    r = requests.get('{0}/menu'.format(service.host))
+    response = json.loads(r.text)
+    return response
+
+def smartWelcome(services=[], country=None):
+    language = 'en'
+    if country.language != 'unknown':
+        language = country.language
+    translator = Translator(to_lang=language)
+    content = ["sms-services"]
+    content.append("{0}".format(translator.translate(menu())))
+    if len(services) > 0:
+        content.append(translator.translate("You are automatically registered to some default services."))
+    for service in services:
+        content.append(service.name)
+        content.append("{0}".format(translator.translate(get_menu(service))))
+    return '\n'.join(content)
 
 # import all the api endpoints.
 import sso.endpoints

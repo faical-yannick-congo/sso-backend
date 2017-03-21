@@ -98,7 +98,8 @@ def user_register():
                     _user.city = _city
                     _user.services.append(_service)
                     _user.save()
-                    return service_response(201, 'Account created', smartWelcome(_service.name, country))
+
+                    return service_response(201, 'Account created', smartWelcome(_user.services, _country))
                 else:
                     return service_response(204, 'User registration denied', 'A user with this phone number already exists.')
         else:
