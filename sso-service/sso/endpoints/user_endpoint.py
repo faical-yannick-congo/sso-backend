@@ -54,16 +54,18 @@ def user_register():
             print(fk.request.data)
             data = json.loads(fk.request.data)
             phone = data.get('phone', None)
-            service = data.get('service', None)
+            services = data.get('services', None)
             city = data.get('city', 'capital')
             if phone is None and service is None:
                 return service_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
             else:
-                _service = Service.objects(name=service).first()
+                _services = []
+                for service in services:
+                    _services.append(Service.objects(name=service).first())
                 _user = User.objects(phone=phone).first()
                 if _user is None:
-                    if _service is None:
-                        return service_response(204, 'User registration denied', 'No service with this name was found.')
+                    if None is _services:
+                        return service_response(204, 'User registration denied', 'one or more services were not found name was found.')
                     pn = phonenumbers.parse(phone, None)
                     country = str(pn.country_code)
                     _user = User(created_at=str(datetime.datetime.utcnow()))
@@ -71,6 +73,8 @@ def user_register():
                     _country = Country.objects(code=country).first()
                     if _country:
                         _country.users = _country.users + 1
+                        if _country.language == "unknown":
+                            _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         _country.save()
                         _city = City.objects(name=city, country=_country).first()
                     else:
@@ -96,7 +100,7 @@ def user_register():
                         _city.save()
                     _user.country = _country
                     _user.city = _city
-                    _user.services.append(_service)
+                    _user.services.extend(_services)
                     _user.save()
 
                     return service_response(201, 'Account created', smartWelcome(_user.services, _country))
