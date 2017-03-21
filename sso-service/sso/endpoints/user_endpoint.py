@@ -38,7 +38,7 @@ def users_cities(country):
     if fk.request.method == 'GET':
         _country = Country.objects(code=country).first()
         if _country:
-            cities = [ c.info() for c in Cities.objects(country=_country)]
+            cities = [ c.info() for c in City.objects(country=_country)]
             return service_response(200, 'Users cities', {'size':len(cities), 'cities':cities})
         else:
             return service_response(204, 'User cities pull denied', 'No country with this code was found.')
