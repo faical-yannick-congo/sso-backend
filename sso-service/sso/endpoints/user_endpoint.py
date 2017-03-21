@@ -74,6 +74,7 @@ def user_register():
                     if _country:
                         _country.users = _country.users + 1
                         if _country.language == "unknown":
+                            _country_name_short = region_code_for_country_code(pn.country_code)
                             _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         _country.save()
                         _city = City.objects(name=city, country=_country).first()
