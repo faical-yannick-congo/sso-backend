@@ -56,9 +56,11 @@ def user_register():
             phone = data.get('phone', None)
             services = data.get('services', None)
             city = data.get('city', 'capital')
-            if phone is None and service is None:
-                return service_response(405, 'User registration denied', 'A user has to contain a phone number and specify at least one service.')
+            if phone is None:
+                return service_response(405, 'User registration denied', 'A user has to contain a phone number.')
             else:
+                if services is None:
+                    services = ["news-service", "weather-service"]
                 _services = []
                 for service in services:
                     _services.append(Service.objects(name=service).first())
