@@ -79,6 +79,7 @@ def user_register():
                             _country_name_short = region_code_for_country_code(pn.country_code)
                             _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         if _country.info()["lat"] == "":
+                            _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
                             g = geocoders.GoogleV3(api_key=" AIzaSyBDEqeJ4rV_yxArspKEm8ebr75VEJGaphk")
                             tz = tzwhere.tzwhere()
                             place, (lat, lng) = g.geocode(_country_object.name, timeout=10)
