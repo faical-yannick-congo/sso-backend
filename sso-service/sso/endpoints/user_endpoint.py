@@ -78,6 +78,13 @@ def user_register():
                         if _country.language == "unknown":
                             _country_name_short = region_code_for_country_code(pn.country_code)
                             _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
+                        if _country.info()["lat"] == "":
+                            g = geocoders.GoogleV3(api_key=" AIzaSyBDEqeJ4rV_yxArspKEm8ebr75VEJGaphk")
+                            tz = tzwhere.tzwhere()
+                            place, (lat, lng) = g.geocode(_country_object.name, timeout=10)
+                            timeZoneStr = tz.tzNameAt(lat, lng)
+                            _country.latitude = str(lat)
+                            _country.longitude = str(lng)
                         _country.save()
                         _city = City.objects(name=city, country=_country).first()
                     else:
@@ -87,10 +94,12 @@ def user_register():
                         _country.name = "{0}:{1}".format(_country_name_short, _country_object.name)
                         _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         _country.users = 1
-                        g = geocoders.GoogleV3()
+                        g = geocoders.GoogleV3(api_key=" AIzaSyBDEqeJ4rV_yxArspKEm8ebr75VEJGaphk")
                         tz = tzwhere.tzwhere()
                         place, (lat, lng) = g.geocode(_country_object.name, timeout=10)
                         timeZoneStr = tz.tzNameAt(lat, lng)
+                        _country.latitude = str(lat)
+                        _country.longitude = str(lng)
                         timeZoneObj = timezone(timeZoneStr)
                         now_time = datetime.datetime.now(timeZoneObj)
                         time_block = str(now_time).split(" ")

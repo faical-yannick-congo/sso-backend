@@ -11,6 +11,8 @@ class Country(db.Document):
     zone = db.StringField(default="unknown")
     users = db.IntField(default=0)
     language = db.StringField()
+    latitude = db.StringField()
+    longitude = db.StringField()
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
@@ -21,6 +23,13 @@ class Country(db.Document):
         'created_at':self.created_at, 'name':self.name,
         'code':self.code, 'zone':self.zone, 'users':self.users,
         'language':self.language}
+        try:
+            data['lat'] = float(self.latitude)
+            data['lng'] = float(self.longitude)
+        except:
+            data['lat'] = ""
+            data['lng'] = ""
+
         return data
 
     def to_json(self):
