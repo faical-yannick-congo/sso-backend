@@ -56,6 +56,7 @@ def user_register():
             phone = data.get('phone', None)
             services = data.get('services', None)
             city = data.get('city', 'capital')
+            city = city.lower()
             if phone is None:
                 return service_response(405, 'User registration denied', 'A user has to contain a phone number.')
             else:
@@ -74,6 +75,7 @@ def user_register():
                     _user.phone = phone
                     _country = Country.objects(code=country).first()
                     if _country:
+                        _city = City.objects(name=city, country=_country).first()
                         _country.users = _country.users + 1
                         if _country.language == "unknown":
                             _country_name_short = region_code_for_country_code(pn.country_code)
@@ -87,7 +89,6 @@ def user_register():
                             _country.latitude = str(lat)
                             _country.longitude = str(lng)
                         _country.save()
-                        _city = City.objects(name=city, country=_country).first()
                     else:
                         _country = Country(created_at=str(datetime.datetime.utcnow()), code=country)
                         _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
@@ -109,9 +110,11 @@ def user_register():
                         if "+" in time_block[1]:
                             _country.zone = "GMT+{0}".format(time_block[1].split("+")[1].split(":")[0])
                         _country.save()
+                        _city = City.objects(name=city, country=_country).first()
+                    _user.country = _country
+                    if _city is None:
                         _city = City(created_at=str(datetime.datetime.utcnow()), name=city, country=_country)
                         _city.save()
-                    _user.country = _country
                     _user.city = _city
                     _user.services.extend(_services)
                     _user.save()
