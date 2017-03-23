@@ -11,8 +11,8 @@ class Country(db.Document):
     zone = db.StringField(default="unknown")
     users = db.IntField(default=0)
     language = db.StringField()
-    latitude = db.StringField()
-    longitude = db.StringField()
+    latitude = db.StringField(default="")
+    longitude = db.StringField(default="")
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
@@ -24,8 +24,12 @@ class Country(db.Document):
         'code':self.code, 'zone':self.zone, 'users':self.users,
         'language':self.language}
         try:
-            data['lat'] = float(self.latitude)
-            data['lng'] = float(self.longitude)
+            if self.latitude == "":
+                data['lat'] = ""
+                data['lng'] = ""
+            else:
+                data['lat'] = float(self.latitude)
+                data['lng'] = float(self.longitude)
         except:
             data['lat'] = ""
             data['lng'] = ""
