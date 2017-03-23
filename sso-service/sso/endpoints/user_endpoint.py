@@ -89,7 +89,7 @@ def user_register():
                         _country.users = 1
                         g = geocoders.GoogleV3()
                         tz = tzwhere.tzwhere()
-                        place, (lat, lng) = g.geocode(_country_object.name)
+                        place, (lat, lng) = g.geocode(_country_object.name, timeout=10)
                         timeZoneStr = tz.tzNameAt(lat, lng)
                         timeZoneObj = timezone(timeZoneStr)
                         now_time = datetime.datetime.now(timeZoneObj)
