@@ -88,10 +88,9 @@ def fetch_city(city, country):
     response = json.loads(r.text)
     results = response["RESULTS"]
     if len(results) == 0:
-        return None
+        return "capital"
     else:
-        return {"name":results[0]["name"].split(',')[0], "zmw":results[0]["zmw"]}
-    return [c['name'] for c in response['content']['cities']], response['content']['language']
+        return results[0]["name"].split(',')[0]
 
 # import all the api endpoints.
 import sso.endpoints
