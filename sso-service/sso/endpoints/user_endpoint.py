@@ -72,7 +72,7 @@ def user_register():
                     pn = phonenumbers.parse(phone, None)
                     country = str(pn.country_code)
                     _country_name_short = region_code_for_country_code(pn.country_code)
-                    city = fetch_city(city, _country_name_short)
+                    city = fetch_city(city, _country_name_short).lower()
                     _user = User(created_at=str(datetime.datetime.utcnow()))
                     _user.phone = phone
                     _country = Country.objects(code=country).first()
