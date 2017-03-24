@@ -83,5 +83,15 @@ def smartWelcome(services=[], country=None):
         content.append("{0}".format(translator.translate(get_menu(service))))
     return '\n'.join(content)
 
+def fetch_city(city, country):
+    r = requests.get('http://autocomplete.wunderground.com/aq?query={0}&c={1}'.format(city, country))
+    response = json.loads(r.text)
+    results = response["RESULTS"]
+    if len(results) == 0:
+        return None
+    else:
+        return {"name":results[0]["name"].split(',')[0], "zmw":results[0]["zmw"]}
+    return [c['name'] for c in response['content']['cities']], response['content']['language']
+
 # import all the api endpoints.
 import sso.endpoints

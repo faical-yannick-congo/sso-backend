@@ -4,7 +4,7 @@ from flask.ext.api import status
 import flask as fk
 
 from ssodb.common import crossdomain
-from sso import app, SERVICE_URL, service_response, smartWelcome
+from sso import app, SERVICE_URL, service_response, smartWelcome, fetch_city
 from ssodb.common.models import Country, City, Service, User, Activity
 
 import mimetypes
@@ -56,7 +56,7 @@ def user_register():
             phone = data.get('phone', None)
             services = data.get('services', None)
             city = data.get('city', 'capital')
-            city = city.lower()
+            city = city.lower().replace(" ","-")
             if phone is None:
                 return service_response(405, 'User registration denied', 'A user has to contain a phone number.')
             else:
@@ -71,6 +71,10 @@ def user_register():
                         return service_response(204, 'User registration denied', 'one or more services were not found name was found.')
                     pn = phonenumbers.parse(phone, None)
                     country = str(pn.country_code)
+                    _country_name_short = region_code_for_country_code(pn.country_code)
+                    city = fetch_city(city, _country_name_short)
+                    if city is None:
+                        city = "capital"
                     _user = User(created_at=str(datetime.datetime.utcnow()))
                     _user.phone = phone
                     _country = Country.objects(code=country).first()
@@ -78,7 +82,6 @@ def user_register():
                         _city = City.objects(name=city, country=_country).first()
                         _country.users = _country.users + 1
                         if _country.language == "unknown":
-                            _country_name_short = region_code_for_country_code(pn.country_code)
                             _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         if _country.info()["lat"] == "":
                             _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
@@ -92,7 +95,6 @@ def user_register():
                     else:
                         _country = Country(created_at=str(datetime.datetime.utcnow()), code=country)
                         _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
-                        _country_name_short = region_code_for_country_code(pn.country_code)
                         _country.name = "{0}:{1}".format(_country_name_short, _country_object.name)
                         _country.language = Locale.parse('und_{0}'.format(_country_name_short)).language
                         _country.users = 1
