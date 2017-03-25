@@ -62,12 +62,12 @@ def user_activity(country, user_phone):
                         total_sms = total_sms + _activity.sms
                         user_data['services'][_service.name] = [{"day":_activity.day, "sms":_activity.sms}]
             try:
-                if len(response[user.country.name]) > 0:
-                    response[user.country.name].append(user_data)
+                if len(response[_user.country.name]) > 0:
+                    response[_user.country.name].append(user_data)
                 else:
-                    response[user.country.name] = [user_data]
+                    response[_user.country.name] = [user_data]
             except:
-                response[user.country.name] = [user_data]
+                response[_user.country.name] = [user_data]
             return service_response(200, 'Country activities', {"details":response, "summary":{"users":total_users, "sms":total_sms}})
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
