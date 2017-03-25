@@ -58,8 +58,9 @@ def user_activity(country, user_phone):
                         total_sms = total_sms + _activity.sms
                 else:
                     _activity = activities.first()
-                    total_sms = total_sms + _activity.sms
-                    user_data['services'][_service.name] = [{"day":_activity.day, "sms":_activity.sms}]
+                    if _activity:
+                        total_sms = total_sms + _activity.sms
+                        user_data['services'][_service.name] = [{"day":_activity.day, "sms":_activity.sms}]
             try:
                 if len(response[user.country.name]) > 0:
                     response[user.country.name].append(user_data)
