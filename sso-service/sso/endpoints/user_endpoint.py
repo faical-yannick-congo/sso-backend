@@ -24,6 +24,52 @@ from tzwhere import tzwhere
 from pytz import timezone
 from babel import Locale
 
+
+@app.route(SERVICE_URL + '/user/activity/<country>/<user_phone>', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
+def user_activity(country, user_phone):
+    if fk.request.method == 'GET':
+        response = {}
+        total_users = 0
+        total_sms = 0
+        if country == "all":
+            if user_phone != "all":
+                users = [User.objects(phone=user_phone).first()]
+            else:
+                users = User.objects()
+        else:
+            _country = Country.objects(code=country).first()
+            if _country:
+                if user_phone != "all":
+                    users = [User.objects(country=_country, phone=user_phone).first()]
+                else:
+                    users = User.objects(country=_country)
+            else:
+                users = []
+        for _user in users:
+            total_users = total_users + 1
+            services = Service.objects()
+            user_data = {"user":user.phone, "services":{}}
+            for _service in services:
+                activities = Activity.objects(user=_user, service=_service)
+                if len(activities) > 0:
+                    for _activity in activities:
+                        user_data['services'][_service.name].append({"day":_activity.day, "sms":_activity.sms})
+                        total_sms = total_sms + _activity.sms
+                else:
+                    total_sms = total_sms + _activity.sms
+                    user_data['services'][_service.name] = [{"day":_activity.day, "sms":_activity.sms}]
+            try:
+                if len(response[user.country.name]) > 0:
+                    response[user.country.name].append(user_data)
+                else:
+                    response[user.country.name] = [user_data]
+            except:
+                response[user.country.name] = [user_data]
+            return service_response(200, 'Country activities', {"details":response, "summary":{"users":total_users, "sms":total_sms}})
+    else:
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
+
 @app.route(SERVICE_URL + '/users/countries', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
 def users_countries():
