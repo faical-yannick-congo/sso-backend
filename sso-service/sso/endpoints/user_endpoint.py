@@ -49,7 +49,7 @@ def user_activity(country, user_phone):
         for _user in users:
             total_users = total_users + 1
             services = Service.objects()
-            user_data = {"user":user.phone, "services":{}}
+            user_data = {"user":_user.phone, "services":{}}
             for _service in services:
                 activities = Activity.objects(user=_user, service=_service)
                 if len(activities) > 0:
