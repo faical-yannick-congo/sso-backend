@@ -57,6 +57,7 @@ def user_activity(country, user_phone):
                         user_data['services'][_service.name].append({"day":_activity.day, "sms":_activity.sms})
                         total_sms = total_sms + _activity.sms
                 else:
+                    _activity = activities.first()
                     total_sms = total_sms + _activity.sms
                     user_data['services'][_service.name] = [{"day":_activity.day, "sms":_activity.sms}]
             try:
